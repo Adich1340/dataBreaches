@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Fetching from './components/Fetching';
+import Posts from './components/Posts';
 import './Style/style.css'
 
 function App() {
@@ -10,8 +10,22 @@ function App() {
   }, [darkMode])
 
   function getInitialMode() {
+    const isReturningUser = "dark" in localStorage;
     const savedMode = JSON.parse(localStorage.getItem('dark'));
-    return savedMode || false; 
+    const userPrefersDark = getPrefColorScheme();
+    if(isReturningUser){
+      return savedMode;
+    } else if(userPrefersDark){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function getPrefColorScheme() {
+    if(!window.matchMedia) return;
+
+    return window.matchMedia("(prefers-color-scheme: dark)").matches; 
   }
 
   return (
@@ -21,7 +35,7 @@ function App() {
           <span className="toggle">
             <input
               checked={darkMode}
-              onChange={() => setDarkMode(prevMode => !prevMode)} 
+              onChange={() => setDarkMode(prevMode => !prevMode)}
               type="checkbox"
               className="checkbox"
               id="checkbox"
@@ -29,7 +43,7 @@ function App() {
           </span>
         </div>        
       </nav>
-      <Fetching />
+      <Posts />
     </div>
   );
 }
